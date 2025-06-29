@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CFR Falls Tool</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">CFR Falls Assessment Tool</h1>
+  </header>
+
+  <main>
+    <section id="main-form" class="form-section hidden">
+      <h2>Patient & Incident Details</h2>
+      <label>CFR Call Sign <input type="text" id="cfr-id" /></label>
+      <label>ESR Number <input type="text" id="esr-number" /></label>
+      <label>Incident Date <input type="date" id="incident-date" /></label>
+      <label>Incident Time <input type="time" id="incident-time" /></label>
+      <label>INC Number <input type="text" id="inc-number" /></label>
+      <label>Patient Sex <select id="patient-sex"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+      <label>Patient Age <input type="number" id="patient-age" min="0" max="120" /></label>
+
+      <hr/>
+      <h2>FAST Test</h2>
+      <div id="fast-test"></div>
+
+      <h2>GCS Assessment</h2>
+      <div id="gcs-section"></div>
+
+      <h2>AVPU</h2>
+      <div id="avpu-section"></div>
+
+      <hr/>
+      <h2>Observations</h2>
+      <div id="obs-section"></div>
+
+      <hr/>
+      <h2>ISTUMBLE Assessment</h2>
+      <div id="istumble-content"></div>
+      <div id="istumble-result" class="risk-result"></div>
+
+      <hr/>
+      <h2>FRAT Assessment</h2>
+      <div id="frat-section"></div>
+      <div id="frat-comments" class="conditional-comments"></div>
+    </section>
+
+    <section id="card-view" class="form-section hidden"></section>
+  </main>
+
+  <footer class="app-footer">
+    <button id="summaryBtn">📋 Summary</button>
+    <button id="medsBtn">💊 Medicines</button>
+    <button id="settingsBtn">⚙️ Settings</button>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
