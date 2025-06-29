@@ -4,23 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CFR Falls Tool</title>
-  <link rel="manifest" href="manifest.json">
+
+  <!-- PWA and Icons -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007f3b" />
+  <link rel="icon" href="icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
+    <img src="secamb.png" class="logo" alt="SECamb Logo">
     <h1 class="app-title">CFR Falls Assessment Tool</h1>
+    <img src="nhs.png" class="logo" alt="NHS Logo">
   </header>
 
   <main>
     <section id="main-form" class="form-section hidden">
+      <!-- Patient & Incident Details -->
       <h2>Patient & Incident Details</h2>
       <label>CFR Call Sign <input type="text" id="cfr-id" /></label>
       <label>ESR Number <input type="text" id="esr-number" /></label>
       <label>Incident Date <input type="date" id="incident-date" /></label>
       <label>Incident Time <input type="time" id="incident-time" /></label>
       <label>INC Number <input type="text" id="inc-number" /></label>
-      <label>Patient Sex <select id="patient-sex"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+      <label>Patient Sex 
+        <select id="patient-sex">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </label>
       <label>Patient Age <input type="number" id="patient-age" min="0" max="120" /></label>
 
       <hr/>
@@ -58,5 +76,11 @@
   </footer>
 
   <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
 </body>
 </html>
+
