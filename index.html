@@ -4,15 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CFR Falls Tool</title>
-
-  <!-- PWA and Icons -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#007f3b" />
   <link rel="icon" href="icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,7 +20,6 @@
 
   <main>
     <section id="main-form" class="form-section">
-      <!-- Patient & Incident Details -->
       <h2>Patient & Incident Details</h2>
       <label>CFR Call Sign <input type="text" id="cfr-id" /></label>
       <label>ESR Number <input type="text" id="esr-number" /></label>
@@ -63,10 +58,11 @@
       <hr/>
       <h2>FRAT Assessment</h2>
       <div id="frat-section"></div>
-      <div id="frat-comments" class="conditional-comments"></div>
+      <div id="frat-comments" class="risk-result"></div>
     </section>
 
     <section id="card-view" class="form-section hidden"></section>
+    <section id="settings" class="form-section hidden"></section>
   </main>
 
   <footer class="app-footer">
@@ -78,14 +74,13 @@
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').then(function(reg) {
-        console.log('Service Worker registered with scope:', reg.scope);
-      }).catch(function(err) {
-        console.log('Service Worker registration failed:', err);
-      });
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log("SW registered:", reg))
+        .catch(err => console.error("SW registration failed:", err));
     }
   </script>
 </body>
 </html>
+
 
 
