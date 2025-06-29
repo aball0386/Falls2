@@ -1,10 +1,11 @@
 function buildForm() {
   buildFastTest();
-  buildGcsSection();
-  buildAvpuSection();
-  buildObsSection();
   buildIstumble();
-  buildFratSection();
+  buildObsSection();
+  buildGCS();
+  buildAVPU();   
+  buildFRAT();  
+  setupTooltips();
 }
 
 function createOption(value, text, selected = false) {
@@ -464,11 +465,9 @@ function applyAppSettings() {
   document.body.classList.toggle("compact", compact);
 }
 
-// Initialize on load
 window.onload = () => {
-  applyAppSettings();
   buildForm();
-  document.getElementById("main-form")?.classList.remove("hidden");
+  document.getElementById("main-form").classList.remove("hidden");
 };
 
 
