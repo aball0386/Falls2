@@ -1,0 +1,110 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.app-header {
+  background-color: #00703C;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+.form-section {
+  background-color: white;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.risk-result {
+  font-weight: bold;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.high-risk {
+  background-color: #ffd6d6;
+  color: #a10000;
+  border: 1px solid #a10000;
+}
+
+.medium-risk {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #856404;
+}
+
+.low-risk {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #155724;
+}
+
+.hidden {
+  display: none;
+}
+
+.flashing {
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #00703C;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.app-footer button {
+  background: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #00703C;
+}
+
+body.dark {
+  background-color: #111;
+  color: #eee;
+}
+
+body.dark input, body.dark select, body.dark textarea {
+  background: #222;
+  color: #fff;
+  border-color: #555;
+}
+
+body.compact label {
+  font-size: 0.85em;
+  margin: 5px 0;
+}
