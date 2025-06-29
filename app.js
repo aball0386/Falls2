@@ -1,13 +1,3 @@
-function buildForm() {
-  buildFastTest();
-  buildIstumble();
-  buildObsSection();
-  buildGCS();
-  buildAVPU();   
-  buildFRAT();  
-  setupTooltips();
-}
-
 function createOption(value, text, selected = false) {
   const option = document.createElement("option");
   option.value = value;
@@ -51,11 +41,27 @@ function setInputColorByValue(input, value, thresholds) {
   else input.classList.add("green");
 }
 
+window.onload = () => {
+  applyAppSettings();
+  buildForm();
+  document.getElementById("main-form").classList.remove("hidden");
+};
+
+function buildForm() {
+  buildFastTest();
+  buildGcsSection();
+  buildAvpuSection();
+  buildObsSection();
+  buildIstumble();
+  buildFratSection();
+}
+
+// --- FAST Test ---
 function buildFastTest() {
   const container = document.getElementById("fast-test");
   const questions = [
     { id: "face", text: "Facial weakness", desc: "Ask the patient to smile or show teeth. Look for NEW lack of symmetry." },
-    { id: "arm", text: "Arm weakness", desc: "Ask the patient to lift their arms together and hold for 5 seconds. Does one arm drift or fall down?" },
+    { id: "arm", text: "Arm weakness", desc: "Ask the patient to lift their arms together and hold for 5 seconds." },
     { id: "speech", text: "Speech", desc: "Ask the patient to repeat a phrase. Assess for slurring or difficulty." },
     { id: "time", text: "Time", desc: "Note the time of onset and pass to hospital." }
   ];
@@ -68,7 +74,6 @@ function buildFastTest() {
       { value: "Unknown", text: "Unknown" }
     ]);
     container.appendChild(createLabel(q.text, select, q.desc));
-
     select.addEventListener("change", evaluateFast);
   });
 
@@ -100,14 +105,8 @@ function buildFastTest() {
   alertDiv.classList.add("hidden", "risk-result", "high-risk");
   container.appendChild(alertDiv);
 
-  const bloodDrugs = [
-    "Warfarin", "Aspirin", "Clopidogrel", "Ticagrelor", "Prasugrel",
-    "Apixaban", "Rivaroxaban", "Dabigatran", "Edoxaban", "Heparin",
-    "LMWH", "Fondaparinux"
-  ];
-  const drugSelect = createSelect("bloodthinner-type", [{ value: "", text: "Select Blood Thinner" }].concat(
-    bloodDrugs.map(d => ({ value: d, text: d }))
-  ));
+  const bloodDrugs = ["Warfarin", "Aspirin", "Clopidogrel", "Ticagrelor", "Prasugrel", "Apixaban", "Rivaroxaban", "Dabigatran", "Edoxaban", "Heparin", "LMWH", "Fondaparinux"];
+  const drugSelect = createSelect("bloodthinner-type", [{ value: "", text: "Select Blood Thinner" }].concat(bloodDrugs.map(d => ({ value: d, text: d }))));
   drugSelect.classList.add("hidden");
   container.appendChild(drugSelect);
 
@@ -121,10 +120,10 @@ function evaluateFast() {
   const face = getVal("fast-face");
   const arm = getVal("fast-arm");
   const speech = getVal("fast-speech");
-
   const result = document.getElementById("fast-result");
+
   if (face === "Yes" || arm === "Yes" || speech === "Yes") {
-    result.textContent = "⚠️ FAST positive – potential stroke. Call emergency services.";
+    result.textContent = "⚠️ FAST positive – potential stroke.";
     result.classList.add("high-risk", "flashing");
     result.classList.remove("low-risk");
   } else {
@@ -158,8 +157,8 @@ function evaluateGcs() {
   const e = parseInt(getVal("gcs-eye")) || 0;
   const v = parseInt(getVal("gcs-verbal")) || 0;
   const m = parseInt(getVal("gcs-motor")) || 0;
-
   const result = document.getElementById("gcs-result");
+
   if (e && v && m) {
     const total = e + v + m;
     result.textContent = `🧠 GCS Score: ${total}`;
@@ -185,7 +184,6 @@ function buildAvpuSection() {
     { value: "Pain", text: "Responds to Pain" },
     { value: "Unresponsive", text: "Unresponsive" }
   ]);
-
   avpuSelect.addEventListener("change", evaluateAvpu);
   container.appendChild(createLabel("AVPU", avpuSelect));
 
@@ -198,6 +196,7 @@ function buildAvpuSection() {
 function evaluateAvpu() {
   const val = getVal("avpu-scale");
   const result = document.getElementById("avpu-result");
+
   if (val === "Unresponsive") {
     result.textContent = "⚠️ Patient unresponsive – emergency!";
     result.classList.add("high-risk", "flashing");
@@ -217,7 +216,7 @@ function buildObsSection() {
   const obsButtonContainer = document.createElement("div");
   obsButtonContainer.id = "obs-buttons";
 
-  ["OBS1", "OBS2", "OBS3"].forEach((label, index) => {
+  ["OBS1", "OBS2", "OBS3"].forEach((label) => {
     const button = document.createElement("button");
     button.textContent = label;
     button.addEventListener("click", () => renderObsSet(label));
@@ -258,9 +257,7 @@ function renderObsSet(label) {
     input.type = "number";
     input.id = `${label.toLowerCase()}-${f.id}`;
     input.placeholder = f.text;
-    input.addEventListener("input", () => {
-      setInputColorByValue(input, input.value, f.thresholds);
-    });
+    input.addEventListener("input", () => setInputColorByValue(input, input.value, f.thresholds));
     obsDiv.appendChild(createLabel(f.text, input));
   });
 
@@ -315,11 +312,6 @@ function buildIstumble() {
     container.appendChild(createLabel(q.text, select));
     container.appendChild(comment);
   });
-
-  const resultDiv = document.createElement("div");
-  resultDiv.id = "istumble-result";
-  resultDiv.className = "risk-result";
-  container.appendChild(resultDiv);
 }
 
 function handleIstumbleInput(id, val) {
@@ -339,9 +331,9 @@ function handleIstumbleInput(id, val) {
 }
 
 function evaluateIstumble() {
-  const fields = ["pain", "spine", "tingling", "unconscious", "mobility", "bleed", "unwell", "trauma"];
+  const ids = ["pain", "spine", "tingling", "unconscious", "mobility", "bleed", "unwell", "trauma"];
   const result = document.getElementById("istumble-result");
-  const hasYes = fields.some(id => getVal(id) === "Yes");
+  const hasYes = ids.some(id => getVal(id) === "Yes");
 
   if (hasYes) {
     result.textContent = "⚠️ ISTUMBLE Red Flags Present. Do Not Lift.";
@@ -355,9 +347,9 @@ function evaluateIstumble() {
 function buildFratSection() {
   const container = document.getElementById("frat-section");
   const questions = [
-    { id: "frat-falls", text: "Previous falls in last 12 months", options: [[0, "None"], [5, "1 fall"], [10, "2+ falls"]] },
+    { id: "frat-falls", text: "Previous falls", options: [[0, "None"], [5, "1 fall"], [10, "2+ falls"]] },
     { id: "frat-medication", text: "On 4+ medications", options: [[0, "No"], [5, "Yes"]] },
-    { id: "frat-gait", text: "Impaired gait or balance", options: [[0, "No"], [5, "Yes"]] },
+    { id: "frat-gait", text: "Impaired gait", options: [[0, "No"], [5, "Yes"]] },
     { id: "frat-cognition", text: "Cognitive impairment", options: [[0, "No"], [5, "Yes"]] }
   ];
 
@@ -370,11 +362,6 @@ function buildFratSection() {
   btn.textContent = "Calculate FRAT Score";
   btn.addEventListener("click", evaluateFrat);
   container.appendChild(btn);
-
-  const result = document.createElement("div");
-  result.id = "frat-comments";
-  result.className = "risk-result";
-  container.appendChild(result);
 }
 
 function evaluateFrat() {
@@ -394,37 +381,22 @@ function evaluateFrat() {
   }
 }
 
+// Summary, Settings, Startup
+document.getElementById("summaryBtn").addEventListener("click", buildSummaryCard);
+
 function buildSummaryCard() {
   const card = document.getElementById("card-view");
-  card.innerHTML = "";
+  card.innerHTML = "<h3>Patient Summary</h3>";
 
-  const summary = document.createElement("div");
-  summary.innerHTML = `
-    <h3>FAST Test</h3>
-    Face: ${getVal("fast-face")}<br>
-    Arm: ${getVal("fast-arm")}<br>
-    Speech: ${getVal("fast-speech")}<br>
-    Time: ${getVal("fast-time")}<br>
-    On Blood Thinners: ${getVal("fast-bloodthinner")} (${getVal("bloodthinner-type")})
-    
-    <h3>GCS</h3>
-    Eye: ${getVal("gcs-eye")}<br>
-    Verbal: ${getVal("gcs-verbal")}<br>
-    Motor: ${getVal("gcs-motor")}
-
-    <h3>AVPU</h3>
-    ${getVal("avpu-scale")}
-
-    <h3>ISTUMBLE</h3>
-    ${["pain", "spine", "tingling", "unconscious", "mobility", "bleed", "unwell", "trauma"]
-      .map(id => `${id.toUpperCase()}: ${getVal(id)} ${getVal(id + "-comment") ? " - " + getVal(id + "-comment") : ""}`)
-      .join("<br>")}
-
-    <h3>FRAT</h3>
-    ${document.getElementById("frat-comments").textContent}
+  const result = document.createElement("div");
+  result.innerHTML = `
+    <strong>FAST:</strong> Face ${getVal("fast-face")}, Arm ${getVal("fast-arm")}, Speech ${getVal("fast-speech")}<br/>
+    <strong>Blood Thinner:</strong> ${getVal("fast-bloodthinner")} ${getVal("bloodthinner-type")}<br/>
+    <strong>GCS:</strong> E${getVal("gcs-eye")} V${getVal("gcs-verbal")} M${getVal("gcs-motor")}<br/>
+    <strong>AVPU:</strong> ${getVal("avpu-scale")}<br/>
+    <strong>ISTUMBLE:</strong> ${["pain", "spine", "tingling", "unconscious", "mobility", "bleed", "unwell", "trauma"].map(id => `${id.toUpperCase()}: ${getVal(id)}`).join(", ")}
   `;
-
-  card.appendChild(summary);
+  card.appendChild(result);
 
   const backBtn = document.createElement("button");
   backBtn.textContent = "⬅ Back";
@@ -433,13 +405,10 @@ function buildSummaryCard() {
     document.getElementById("main-form").classList.remove("hidden");
   });
 
-  card.appendChild(backBtn);
   card.classList.remove("hidden");
   document.getElementById("main-form").classList.add("hidden");
+  card.appendChild(backBtn);
 }
-
-// Summary, Settings, and Medicines button handlers
-document.getElementById("summaryBtn").addEventListener("click", buildSummaryCard);
 
 document.getElementById("settingsBtn").addEventListener("click", () => {
   const container = document.getElementById("settings");
@@ -448,6 +417,8 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
     <label><input type="checkbox" id="compact-mode"> Compact Mode</label><br>
     <button onclick="saveAppSettings()">Save</button>
   `;
+  container.classList.remove("hidden");
+  document.getElementById("main-form").classList.add("hidden");
 });
 
 function saveAppSettings() {
@@ -465,10 +436,34 @@ function applyAppSettings() {
   document.body.classList.toggle("compact", compact);
 }
 
-window.onload = () => {
-  buildForm();
-  document.getElementById("main-form").classList.remove("hidden");
-};
+const CACHE_NAME = "cfr-pwa-cache-v1";
+const urlsToCache = [
+  "index.html",
+  "style.css",
+  "app.js",
+  "manifest.json",
+  "icon-192.png",
+  "icon-512.png",
+  "nhs.png",
+  "secamb.png"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
+
 
 
 
