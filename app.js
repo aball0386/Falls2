@@ -641,3 +641,39 @@ async function lookupDrug() {
     alert("Could not retrieve drug info.");
   }
 }
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  const existing = document.getElementById("settings-panel");
+  if (existing) return existing.scrollIntoView();
+
+  const container = document.createElement("div");
+  container.id = "settings-panel";
+  container.innerHTML = `
+    <h3>App Settings</h3>
+    <label><input type="checkbox" id="setting-dark-mode"> Enable Dark Mode</label><br>
+    <label><input type="checkbox" id="setting-alert-sounds" checked> Enable Alert Sounds</label><br>
+    <label><input type="checkbox" id="setting-compact-view"> Use Compact Layout</label><br>
+    <button onclick="saveAppSettings()">Save Settings</button>
+    <div id="settings-message" style="margin-top:10px;"></div>
+  `;
+  document.body.appendChild(container);
+});
+
+function saveAppSettings() {
+  const settings = {
+    darkMode: document.getElementById("setting-dark-mode").checked,
+    sounds: document.getElementById("setting-alert-sounds").checked,
+    compact: document.getElementById("setting-compact-view").checked
+  };
+
+  localStorage.setItem("app-settings", JSON.stringify(settings));
+  document.getElementById("settings-message").textContent = "✅ Settings saved.";
+  applyAppSettings();
+}
+
+function applyAppSettings() {
+  const settings = JSON.parse(localStorage.getItem("app-settings") || "{}");
+  document.body.classList.toggle("dark", settings.darkMode);
+  document.body.classList.toggle("compact", settings.compact);
+}
+
